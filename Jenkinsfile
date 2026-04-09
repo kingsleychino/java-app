@@ -50,7 +50,7 @@ pipeline {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', REGISTRY_CREDENTIALS) {
                         dockerImage.push("${DOCKER_TAG}")
-                        dockerImage.push('latest')
+                        // dockerImage.push('latest')
                     }
                 }
             }
