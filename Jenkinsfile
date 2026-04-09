@@ -47,7 +47,7 @@ pipeline {
         stage('Docker Push') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.come', REGISTRY_CREDENTIALS) {
+                    docker.withRegistry('https://registry.hub.docker.com', REGISTRY_CREDENTIALS) {
                         dockerImage.push("${DOCKER_TAG}")
                         dockerImage.push('latest')
                     }
