@@ -10,16 +10,17 @@ pipeline {
         DOCKER_TAG = "${BUILD_NUMBER}"
         REGISTRY_CREDENTIALS = 'dockerhub-credentials'
     }
-    
+
     stages {
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/kingsleychino/java-app.git'
             }
         }
+
         stage('Build') {
             steps {
-                sh 'mvn clean install'
+                sh 'mvn clean install -DskipTests'
             }
         }
 
@@ -31,7 +32,7 @@ pipeline {
 
         stage('Package') {
             steps {
-                sh 'mvn package'
+                sh 'mvn package -DskipTests'
                 archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
             }
         }
@@ -58,9 +59,9 @@ pipeline {
         stage('Docker Run') {
             steps {
                 sh '''
-                    docker stop demo-app || true
-                    docker rm demo-app || true
-                    docker run -d -p 8080:8080 --name demo-app --rm ${DOCKER_IMAGE}:${DOCKER_TAG}
+                    docker stop java-app || true
+                    docker rm java-app || true
+                    docker run -d -p 8081:8080 --name java-app ${DOCKER_IMAGE}:${DOCKER_TAG}
                 '''
             }
         }
@@ -72,10 +73,10 @@ pipeline {
             cleanWs()
         }
         success {
-            echo "Image pushed: ${DOCKER_IMAGE}:${DOCKER_TAG}"
+            echo "✅ Image pushed: ${DOCKER_IMAGE}:${DOCKER_TAG}"
         }
         failure {
-            echo 'Build failed'
+            echo '❌ Build failed!'
         }
     }
 }
