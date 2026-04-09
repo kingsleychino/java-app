@@ -23,7 +23,7 @@ pipeline {
             }
         }
 
-        stage('Hello') {
+        stage('Package') {
             steps {
                 sh 'mvn package'
                 archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
@@ -32,6 +32,9 @@ pipeline {
     }
 
     post {
+        always {
+            cleanWs()
+        }
         success {
             echo 'Build completed successfully'
         }
